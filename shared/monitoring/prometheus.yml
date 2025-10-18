@@ -1,0 +1,62 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Monolith Application
+  - job_name: 'monolith-app'
+    scheme: 'http'
+    static_configs:
+      - targets: ['monolith-app:5000']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    scrape_timeout: 5s
+
+  # Microservices - API Gateway
+  - job_name: 'api-gateway'
+    scheme: 'http'
+    static_configs:
+      - targets: ['api-gateway:80']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    scrape_timeout: 5s
+
+  # Microservices - Health Service
+  - job_name: 'health-service'
+    scheme: 'http'
+    static_configs:
+      - targets: ['health-service:80']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    scrape_timeout: 5s
+
+  # Microservices - Order Service
+  - job_name: 'order-service'
+    scheme: 'http'
+    static_configs:
+      - targets: ['order-service:80']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    scrape_timeout: 5s
+
+  # Microservices - Compute Service
+  - job_name: 'compute-service'
+    scheme: 'http'
+    static_configs:
+      - targets: ['compute-service:80']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    scrape_timeout: 5s
+
+  # Microservices - Bulk Service
+  - job_name: 'bulk-service'
+    scheme: 'http'
+    static_configs:
+      - targets: ['bulk-service:80']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    scrape_timeout: 5s

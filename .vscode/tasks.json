@@ -1,0 +1,229 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "docker-compose-monitoring-up",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": ["-f", "docker-compose.monitoring.yml", "up", "-d"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "docker-compose-monitoring-down",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": ["-f", "docker-compose.monitoring.yml", "down"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "docker-compose-monolith-up",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": ["-f", "docker-compose.monolith.yml", "up", "--build", "-d"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "docker-compose-monolith-down",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": ["-f", "docker-compose.monolith.yml", "down"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "docker-compose-microservices-up",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": ["-f", "docker-compose.microservices.yml", "up", "--build", "-d"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "docker-compose-microservices-down",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": ["-f", "docker-compose.microservices.yml", "down"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "build-monolith",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["build", "apps/monolith/MonolithApp.csproj"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-microservices",
+      "type": "shell",
+      "command": "dotnet",
+      "args": ["build", "apps/microservices/MicroservicesArchitecture.sln"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "run-k6-monolith",
+      "type": "shell",
+      "command": "k6",
+      "args": ["run", "shared/load-testing/k6-script.js"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "run-k6-microservices",
+      "type": "shell",
+      "command": "k6",
+      "args": ["run", "shared/load-testing/k6-microservices-script.js"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "open-grafana",
+      "type": "shell",
+      "command": "start",
+      "args": ["http://localhost:3000"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "open-prometheus",
+      "type": "shell",
+      "command": "start",
+      "args": ["http://localhost:9090"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "open-monolith-swagger",
+      "type": "shell",
+      "command": "start",
+      "args": ["http://localhost:6000/swagger"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "open-microservices-swagger",
+      "type": "shell",
+      "command": "start",
+      "args": ["http://localhost:7000/swagger"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+# Monolith Application
+# Connects to the shared monitoring stack
+
+services:
+  # .NET Monolith Application
+  monolith-app:
+    build:
+      context: ./apps/monolith
+      dockerfile: Dockerfile
+    container_name: monolith-app
+    ports:
+      - "6000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://+:5000
+    volumes:
+      - ./data:/app/data
+    networks:
+      - monitoring-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  monitoring-network:
+    external: true
+    name: monolith-architecture_monitoring-network

@@ -1,0 +1,89 @@
+{
+  "dotnet.defaultSolution": "apps/monolith/MonolithApp.sln",
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true,
+    "**/.vs": true,
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/data": false
+  },
+  "search.exclude": {
+    "**/bin": true,
+    "**/obj": true,
+    "**/node_modules": true,
+    "**/data": true
+  },
+  "docker.defaultRegistryPath": "",
+  "docker.showStartPage": false,
+  "docker.containers.sortBy": "CreatedTime",
+  "docker.containers.sortOrder": "Desc",
+  "docker.images.sortBy": "CreatedTime",
+  "docker.images.sortOrder": "Desc",
+  "docker.volumes.sortBy": "CreatedTime",
+  "docker.volumes.sortOrder": "Desc",
+  "docker.networks.sortBy": "CreatedTime",
+  "docker.networks.sortOrder": "Desc",
+  "docker.composeFile": "docker-compose.yml",
+  "docker.composeFiles": [
+    "docker-compose.yml",
+    "docker-compose.monitoring.yml",
+    "docker-compose.monolith.yml",
+    "docker-compose.microservices.yml"
+  ],
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "icon": "terminal-powershell"
+    },
+    "Command Prompt": {
+      "path": "C:\\Windows\\System32\\cmd.exe",
+      "args": [],
+      "icon": "terminal-cmd"
+    },
+    "Git Bash": {
+      "path": "C:\\Program Files\\Git\\bin\\bash.exe",
+      "icon": "terminal-bash"
+    }
+  },
+  "extensions.recommendations": [
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.vscode-dotnet-runtime",
+    "ms-vscode.vscode-docker",
+    "ms-vscode.powershell",
+    "grafana.vscode-jsonnet",
+    "redhat.vscode-yaml",
+    "ms-kubernetes-tools.vscode-kubernetes-tools"
+  ],
+  "csharp.semanticHighlighting.enabled": true,
+  "csharp.inlayHints.parameters.enabled": true,
+  "csharp.inlayHints.types.enabled": true,
+  "csharp.format.enable": true,
+  "omnisharp.enableEditorConfigSupport": true,
+  "omnisharp.enableRoslynAnalyzers": true,
+  "omnisharp.organizeImportsOnFormat": true,
+  "json.schemas": [
+    {
+      "fileMatch": ["docker-compose*.yml"],
+      "url": "https://json.schemastore.org/docker-compose.json"
+    }
+  ],
+  "yaml.schemas": {
+    "https://json.schemastore.org/docker-compose.json": [
+      "docker-compose*.yml"
+    ]
+  },
+  "files.associations": {
+    "docker-compose*.yml": "dockercompose",
+    "*.dockerfile": "dockerfile",
+    "Dockerfile*": "dockerfile"
+  },
+  "emmet.includeLanguages": {
+    "dockerfile": "dockerfile"
+  },
+  "docker.containers.label": "ContainerName",
+  "docker.images.label": "Tag",
+  "docker.volumes.label": "Name",
+  "docker.networks.label": "Name"
+}
