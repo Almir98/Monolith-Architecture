@@ -1,0 +1,54 @@
+# Git
+.git
+.gitignore
+README.md
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+bin/
+obj/
+out/
+
+# Logs
+logs/
+*.log
+
+# Database files (will be mounted as volume)
+*.db
+*.db-shm
+*.db-wal
+
+# Monitoring
+monitoring/
+
+# Load testing
+load-testing/
+
+# Documentation
+*.md
+!README.md
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

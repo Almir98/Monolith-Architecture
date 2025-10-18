@@ -1,0 +1,133 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🐳 Start Monitoring Stack",
+      "type": "docker",
+      "request": "launch",
+      "containerName": "monitoring-stack",
+      "dockerComposeFile": "docker-compose.monitoring.yml",
+      "dockerComposeService": "prometheus",
+      "preLaunchTask": "docker-compose-monitoring-up",
+      "postDebugTask": "docker-compose-monitoring-down"
+    },
+    {
+      "name": "🐳 Start Monolith",
+      "type": "docker",
+      "request": "launch",
+      "containerName": "monolith-app",
+      "dockerComposeFile": "docker-compose.monolith.yml",
+      "dockerComposeService": "monolith-app",
+      "preLaunchTask": "docker-compose-monolith-up",
+      "postDebugTask": "docker-compose-monolith-down"
+    },
+    {
+      "name": "🐳 Start Microservices",
+      "type": "docker",
+      "request": "launch",
+      "containerName": "microservices-stack",
+      "dockerComposeFile": "docker-compose.microservices.yml",
+      "dockerComposeService": "api-gateway",
+      "preLaunchTask": "docker-compose-microservices-up",
+      "postDebugTask": "docker-compose-microservices-down"
+    },
+    {
+      "name": "🔍 Debug Monolith App",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/apps/monolith/bin/Debug/net8.0/MonolithApp.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/apps/monolith",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:6000"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      "name": "🔍 Debug Microservices API Gateway",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/apps/microservices/src/ApiGateway/bin/Debug/net8.0/ApiGateway.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/apps/microservices/src/ApiGateway",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s/swagger"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://localhost:7000"
+      },
+      "sourceFileMap": {
+        "/Views": "${workspaceFolder}/Views"
+      }
+    },
+    {
+      "name": "🧪 Load Test Monolith",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/shared/load-testing/k6-script.js",
+      "cwd": "${workspaceFolder}/shared/load-testing",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "k6",
+      "runtimeArgs": ["run"]
+    },
+    {
+      "name": "🧪 Load Test Microservices",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/shared/load-testing/k6-microservices-script.js",
+      "cwd": "${workspaceFolder}/shared/load-testing",
+      "console": "integratedTerminal",
+      "runtimeExecutable": "k6",
+      "runtimeArgs": ["run"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "🚀 Full Monolith Stack",
+      "configurations": [
+        "🐳 Start Monitoring Stack",
+        "🐳 Start Monolith"
+      ],
+      "stopAll": true
+    },
+    {
+      "name": "🚀 Full Microservices Stack",
+      "configurations": [
+        "🐳 Start Monitoring Stack",
+        "🐳 Start Microservices"
+      ],
+      "stopAll": true
+    },
+    {
+      "name": "🧪 Test Monolith with Load Testing",
+      "configurations": [
+        "🐳 Start Monitoring Stack",
+        "🐳 Start Monolith",
+        "🧪 Load Test Monolith"
+      ],
+      "stopAll": true
+    },
+    {
+      "name": "🧪 Test Microservices with Load Testing",
+      "configurations": [
+        "🐳 Start Monitoring Stack",
+        "🐳 Start Microservices",
+        "🧪 Load Test Microservices"
+      ],
+      "stopAll": true
+    }
+  ]
+}
