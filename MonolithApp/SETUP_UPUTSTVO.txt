@@ -1,0 +1,514 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                                                                              ║
+║           MONOLITH APP - KOMPLETAN SETUP I MONITORING GUIDE                 ║
+║                                                                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 PREDUSLOV - ŠTA MORA BITI INSTALIRANO:
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ .NET 8 SDK
+✅ Visual Studio 2022 (ili VS Code)
+✅ Docker Desktop (mora biti pokrenut!)
+✅ k6 load testing tool
+   - Windows instalacija: choco install k6
+   - Ili download sa: https://k6.io/docs/getting-started/installation/
+
+═══════════════════════════════════════════════════════════════════════════════
+🚀 KORAK 1: POKRENI MONOLITHAPP APLIKACIJU
+═══════════════════════════════════════════════════════════════════════════════
+
+OPCIJA A - Visual Studio:
+--------------------------
+1. Otvori MonolithApp.sln
+2. Pritisni F5 (sa debugerom) ili Ctrl+F5 (bez debugera)
+3. Swagger će se automatski otvoriti u browseru
+
+OPCIJA B - Terminal/PowerShell:
+--------------------------------
+cd MonolithApp
+dotnet run
+
+PROVJERA DA LI RADI:
+--------------------
+- Otvori: http://localhost:62553/health/ping
+- Očekivani odgovor: "pong"
+- Swagger UI: http://localhost:62553/swagger
+- Raw metrike: http://localhost:62553/metrics
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📊 KORAK 2: POKRENI PROMETHEUS & GRAFANA (MONITORING STACK)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Otvori NOVI terminal (aplikacija iz Koraka 1 mora ostati da radi!)
+
+2. Navigiraj u MonolithApp folder:
+   cd MonolithApp
+
+3. Pokreni Docker Compose:
+   docker-compose up -d
+
+   (-d znači detached mode - radi u pozadini)
+
+4. Provjeri da li kontejneri rade:
+   docker-compose ps
+
+   Trebao bi da vidiš:
+   NAME         IMAGE                    STATUS
+   grafana      grafana/grafana:latest   Up
+   prometheus   prom/prometheus:latest   Up
+
+DODATNE KOMANDE:
+----------------
+# Vidi logove svih kontejnera
+docker-compose logs -f
+
+# Vidi logove samo Prometheusa
+docker-compose logs -f prometheus
+
+# Vidi logove samo Grafane
+docker-compose logs -f grafana
+
+# Restartuj kontejnere
+docker-compose restart
+
+# Zaustavi sve
+docker-compose down
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔍 KORAK 3: PROVJERI PROMETHEUS - DA LI PRIKUPLJA METRIKE
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Otvori Prometheus UI: http://localhost:9090
+
+2. Provjeri Targets (da li scrape-uje tvoju aplikaciju):
+   - Klikni: Status → Targets
+   - Trebao bi da vidiš: "monolith-app" sa statusom UP (zeleno)
+   - Ako je DOWN (crveno), provjeri da li aplikacija radi na portu 62553
+
+3. Testiraj Query - vidi metrike:
+   - Idi na Graph tab (home page)
+   - U polje za query ukucaj: http_requests_total
+   - Klikni Execute
+   - Možda još nema podataka jer nema traffic-a (to ćemo generisati u Koraku 4)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+💥 KORAK 4: POKRENI K6 LOAD TEST - GENERIŠI TRAFFIC
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Otvori NOVI terminal (ostavi aplikaciju i Docker da rade)
+
+2. Navigiraj u MonolithApp folder:
+   cd MonolithApp
+
+3. Pokreni k6 test:
+   k6 run load-testing/k6-script.js
+
+ŠTA K6 RADI:
+------------
+- Pokreće 10 virtualnih korisnika (VUs)
+- Šalje HTTP zahtjeve ka svim endpoint-ima
+- Testira: health, orders, compute, bulk
+- Trajanje: oko 30 sekundi
+- Generiše metrike u realnom vremenu
+
+OČEKIVANI OUTPUT:
+-----------------
+     ✓ status is 200
+     ✓ response time < 500ms
+
+     checks.........................: 100.00%
+     http_req_duration..............: avg=120ms p(95)=300ms
+     http_reqs......................: 5000 total
+     vus............................: 10 max
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📈 KORAK 5: VIDI METRIKE U PROMETHEUS
+═══════════════════════════════════════════════════════════════════════════════
+
+Dok k6 radi (ili nakon što završi), vrati se u Prometheus: http://localhost:9090
+
+PROBAJ OVE PROMETHEUS QUERIES (PromQL):
+----------------------------------------
+
+1. Ukupan broj HTTP zahtjeva (po endpoint-u):
+   http_requests_total
+
+2. Rate (zahtjeva po sekundi) - zadnjih 1 minuta:
+   rate(http_requests_total[1m])
+
+3. Prosječno trajanje zahtjeva:
+   rate(http_request_duration_seconds_sum[1m]) / rate(http_request_duration_seconds_count[1m])
+
+4. P95 response time (95. percentil):
+   histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[1m]))
+
+5. P99 response time (99. percentil):
+   histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[1m]))
+
+6. Broj zahtjeva po HTTP metodi (GET, POST, itd.):
+   sum by (method) (http_requests_total)
+
+7. Broj zahtjeva po endpoint-u:
+   sum by (endpoint) (http_requests_total)
+
+8. Top 5 najkorišćenijih endpoint-a:
+   topk(5, sum by (endpoint) (rate(http_requests_total[1m])))
+
+KAKO KORISTITI PROMETHEUS UI:
+------------------------------
+- Ukucaj query u polje
+- Klikni Execute
+- Prebaci se na Graph tab da vidiš grafikon
+- Podesi Time range (gore desno): Last 5 minutes, Last 15 minutes, itd.
+- Možeš dodati više queries odjednom
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📊 KORAK 6: KONFIGURIŠI GRAFANA - VIZUALIZUJ METRIKE
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 6.1 LOGIN U GRAFANU                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+1. Otvori: http://localhost:3000
+2. Username: admin
+3. Password: admin
+4. Možeš skip-ovati promjenu passworda ili postaviti novi
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 6.2 DODAJ PROMETHEUS KAO DATA SOURCE                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+1. Klikni na ☰ (hamburger menu) → Connections → Data Sources
+2. Klikni Add data source
+3. Izaberi Prometheus
+4. Podesi:
+   - Name: Prometheus
+   - URL: http://prometheus:9090
+     (važno: "prometheus" jer je to ime Docker kontejnera!)
+   - Access: Server (default)
+5. Skroluj dole i klikni Save & Test
+6. Trebao bi da dobiješ: ✅ "Data source is working"
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 6.3 KREIRAJ DASHBOARD                                                       │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+1. Klikni ☰ → Dashboards → New → New Dashboard
+2. Klikni + Add visualization
+3. Izaberi Prometheus data source
+
+PANEL 1 - Request Rate (zahtjeva po sekundi):
+----------------------------------------------
+Query: rate(http_requests_total[1m])
+Title: Request Rate (req/s)
+Visualization: Time series
+Unit: requests/sec (ops/s)
+
+PANEL 2 - Average Response Time:
+---------------------------------
+Query: rate(http_request_duration_seconds_sum[1m]) / rate(http_request_duration_seconds_count[1m])
+Title: Average Response Time
+Visualization: Time series
+Unit: seconds (s)
+
+PANEL 3 - P95 Response Time:
+-----------------------------
+Query: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[1m]))
+Title: P95 Response Time
+Visualization: Time series
+Unit: seconds (s)
+
+PANEL 4 - P99 Response Time:
+-----------------------------
+Query: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[1m]))
+Title: P99 Response Time
+Visualization: Time series
+Unit: seconds (s)
+
+PANEL 5 - Top Endpoints (Bar Chart):
+-------------------------------------
+Query: topk(10, sum by (endpoint) (rate(http_requests_total[1m])))
+Title: Top 10 Endpoints by Request Rate
+Visualization: Bar chart (ili Table)
+
+PANEL 6 - Total Requests (Stat):
+---------------------------------
+Query: sum(http_requests_total)
+Title: Total Requests
+Visualization: Stat
+
+PANEL 7 - Requests by Method:
+------------------------------
+Query: sum by (method) (rate(http_requests_total[1m]))
+Title: Requests by HTTP Method
+Visualization: Pie chart
+
+4. SAČUVAJ DASHBOARD:
+   - Klikni 💾 (Save) ikonu gore desno
+   - Daj ime: MonolithApp Performance Metrics
+   - Klikni Save
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔥 KORAK 7: POKRENI JOŠ JEDAN K6 TEST - GLEDAJ LIVE METRIKE!
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Pokreni k6 test ponovo:
+   k6 run load-testing/k6-script.js
+
+2. Dok k6 radi, otvori SVE OVE PROZORE ISTOVREMENO:
+
+   Browser Tab 1: Prometheus
+   http://localhost:9090
+   Query: rate(http_requests_total[1m])
+
+   Browser Tab 2: Grafana Dashboard
+   http://localhost:3000
+   (tvoj kreirani dashboard)
+
+   Browser Tab 3: Swagger (opcionalno)
+   http://localhost:62553/swagger
+
+   Terminal: k6 output
+
+3. GLEDAJ KAKO SE METRIKE MIJENJAJU U REAL-TIME! 🎉
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📊 NAJVAŽNIJE METRIKE ZA ANALIZU
+═══════════════════════════════════════════════════════════════════════════════
+
+1. THROUGHPUT (Propusnost):
+   Query: rate(http_requests_total[1m])
+   Značenje: Koliko zahtjeva po sekundi aplikacija obrađuje
+
+2. RESPONSE TIME - AVERAGE (Prosječno vrijeme odgovora):
+   Query: rate(http_request_duration_seconds_sum[1m]) / rate(http_request_duration_seconds_count[1m])
+   Značenje: Prosječno vrijeme potrebno da aplikacija odgovori
+
+3. RESPONSE TIME - P95 (95. percentil):
+   Query: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[1m]))
+   Značenje: 95% zahtjeva je obrađeno brže od ovog vremena
+
+4. RESPONSE TIME - P99 (99. percentil):
+   Query: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[1m]))
+   Značenje: 99% zahtjeva je obrađeno brže od ovog vremena
+
+5. HOTTEST ENDPOINTS (Najkorišćeniji endpoint-i):
+   Query: topk(5, sum by (endpoint) (rate(http_requests_total[1m])))
+   Značenje: 5 endpoint-a sa najviše zahtjeva
+
+6. REQUESTS BY METHOD (Zahtjevi po HTTP metodi):
+   Query: sum by (method) (rate(http_requests_total[1m]))
+   Značenje: Koliko GET, POST, PUT, DELETE zahtjeva
+
+7. TOTAL REQUESTS (Ukupan broj zahtjeva):
+   Query: sum(http_requests_total)
+   Značenje: Ukupan broj obrađenih zahtjeva od starta
+
+ŠTA ANALIZIRATI:
+----------------
+- Ako je P95/P99 puno veći od average → imaš outlier-e (neke zahtjeve koji traju dugo)
+- Ako throughput pada → bottleneck ili resursni problemi
+- Ako response time raste sa traffic-om → skalabilnost problemi
+- Ako neki endpoint ima veliku latenciju → optimizuj taj endpoint
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🛑 ZAUSTAVLJANJE SVEGA
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Zaustavi Prometheus & Grafana:
+   docker-compose down
+
+2. Zaustavi MonolithApp aplikaciju:
+   - U Visual Studiju: Shift+F5
+   - U terminalu: Ctrl+C
+
+3. Zaustavi k6 test (ako radi):
+   Ctrl+C
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📝 BRZI CHEAT SHEET - SVE KOMANDE NA JEDNOM MJESTU
+═══════════════════════════════════════════════════════════════════════════════
+
+# 1. POKRENI APLIKACIJU
+cd MonolithApp
+dotnet run
+
+# 2. POKRENI MONITORING STACK
+docker-compose up -d
+
+# 3. PROVJERI STATUS KONTEJNERA
+docker-compose ps
+
+# 4. VIDI LOGOVE
+docker-compose logs -f
+
+# 5. POKRENI LOAD TEST
+k6 run load-testing/k6-script.js
+
+# 6. RESTART PROMETHEUS (ako promijeniš prometheus.yml)
+docker-compose restart prometheus
+
+# 7. ZAUSTAVI MONITORING
+docker-compose down
+
+# 8. OČISTI SVE (uključujući volumes)
+docker-compose down -v
+
+# 9. BUILD APLIKACIJE
+dotnet build
+
+# 10. RESTORE NuGet PAKETE
+dotnet restore
+
+# 11. CLEAN BUILD ARTIFACTS
+dotnet clean
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔗 SVI VAŽNI URL-OVI
+═══════════════════════════════════════════════════════════════════════════════
+
+APLIKACIJA:
+- API Base URL:        http://localhost:62553
+- Swagger UI:          http://localhost:62553/swagger
+- Health Check:        http://localhost:62553/health/ping
+- Raw Metrike:         http://localhost:62553/metrics
+
+MONITORING:
+- Prometheus UI:       http://localhost:9090
+- Prometheus Targets:  http://localhost:9090/targets
+- Grafana UI:          http://localhost:3000 (admin/admin)
+
+API ENDPOINTS (primjeri):
+- GET    /orders                  - Lista svih ordera
+- GET    /orders/{id}             - Specifičan order
+- POST   /orders                  - Kreiraj order
+- PUT    /orders/{id}             - Update order
+- DELETE /orders/{id}             - Obriši order
+- GET    /compute?n=35            - CPU-intensive Fibonacci
+- POST   /bulk?count=100          - Bulk processing
+- GET    /health/ping             - Latency test
+- GET    /metrics                 - Prometheus metrike
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔧 TROUBLESHOOTING - ŠTA URADITI AKO NEŠTO NE RADI
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEM: Docker ne može da se pokrene
+RJEŠENJE: 
+- Provjeri da li je Docker Desktop pokrenut
+- Restartuj Docker Desktop
+- U PowerShell: docker ps (da vidiš da li Docker radi)
+
+PROBLEM: Prometheus kaže "DOWN" za monolith-app target
+RJEŠENJE:
+- Provjeri da li aplikacija radi: http://localhost:62553/health/ping
+- Provjeri da li metrike endpoint radi: http://localhost:62553/metrics
+- Restartuj Prometheus: docker-compose restart prometheus
+
+PROBLEM: Grafana ne može da se konektuje na Prometheus
+RJEŠENJE:
+- Provjeri da li si koristio URL: http://prometheus:9090 (ne localhost!)
+- Provjeri da li Prometheus radi: docker-compose ps
+- Restartuj Grafanu: docker-compose restart grafana
+
+PROBLEM: k6 ne može da nađe aplikaciju
+RJEŠENJE:
+- Provjeri da li aplikacija radi na portu 62553
+- Otvori load-testing/k6-script.js i provjeri BASE_URL
+- Trebao bi biti: http://localhost:62553 ili http://localhost:5000
+
+PROBLEM: Port 62553 je zauzet
+RJEŠENJE:
+- Promijeni port u: MonolithApp/Properties/launchSettings.json
+- Ažuriraj prometheus.yml sa novim portom
+- Ažuriraj k6-script.js sa novim portom
+- Restartuj sve
+
+PROBLEM: Nema metrika u Grafani
+RJEŠENJE:
+- Provjeri Time range (gore desno) - možda gleda pogrešan period
+- Pokreni k6 test da generiše traffic
+- Provjeri da li Prometheus query radi u Prometheus UI prvo
+
+PROBLEM: "No data" u Grafana panelima
+RJEŠENJE:
+- Generiši traffic: pokreni k6 test
+- Provjeri query u Prometheus UI da li vraća podatke
+- Provjeri da li si izabrao pravilan Data Source
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🎯 TIPIČAN WORKFLOW ZA TESTIRANJE I ANALIZU
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Pokreni aplikaciju (dotnet run ili F5)
+2. Testiraj ručno par endpoint-a preko Swagger-a
+3. Pokreni monitoring stack (docker-compose up -d)
+4. Otvori Prometheus i provjeri da vidi aplikaciju (Status → Targets)
+5. Pokreni k6 load test da generiše baseline metrike
+6. Otvori Grafanu i konfiguriši dashboard
+7. Pokreni drugi k6 test i gledaj live metrike
+8. Analiziraj rezultate:
+   - Koji endpoint-i su najsporiji?
+   - Koji endpoint-i imaju najviše traffic-a?
+   - Da li ima spike-ova u latency?
+   - Da li throughput pada pod load-om?
+9. Optimizuj kod baziran na nalazima
+10. Repeat!
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📚 DODATNI RESURSI
+═══════════════════════════════════════════════════════════════════════════════
+
+.NET 8:         https://docs.microsoft.com/en-us/dotnet/core/
+Prometheus:     https://prometheus.io/docs/
+PromQL:         https://prometheus.io/docs/prometheus/latest/querying/basics/
+Grafana:        https://grafana.com/docs/
+k6:             https://k6.io/docs/
+Docker Compose: https://docs.docker.com/compose/
+
+
+═══════════════════════════════════════════════════════════════════════════════
+✅ CHECKLIST - DA LI SI SVE URADIO KAKO TREBA
+═══════════════════════════════════════════════════════════════════════════════
+
+[ ] Aplikacija se pokreće bez grešaka
+[ ] http://localhost:62553/health/ping vraća "pong"
+[ ] http://localhost:62553/metrics vraća Prometheus metrike
+[ ] Docker Desktop je pokrenut
+[ ] docker-compose up -d radi bez grešaka
+[ ] docker-compose ps pokazuje oba kontejnera kao "Up"
+[ ] Prometheus (http://localhost:9090) se otvara
+[ ] Prometheus vidi "monolith-app" kao UP target
+[ ] Grafana (http://localhost:3000) se otvara
+[ ] Prometheus Data Source je dodan u Grafani
+[ ] Dashboard je kreiran u Grafani
+[ ] k6 test se izvršava uspješno
+[ ] Metrike se pojavljuju u Grafani tokom k6 testa
+[ ] Možeš vidjeti live promjene u metrikama
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Sretno sa testiranjem! 🚀
+
+Ako imaš pitanja ili nešto ne radi, provjeri Troubleshooting sekciju.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+

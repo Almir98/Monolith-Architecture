@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "MonolithApp": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:62552/swagger/",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:62552;http://localhost:62553"
+    }
+  }
+}
