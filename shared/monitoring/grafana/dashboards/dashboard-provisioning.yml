@@ -1,9 +1,9 @@
 apiVersion: 1
 
 providers:
-  - name: 'MonolithApp Dashboards'
+  - name: 'Monolith Dashboards'
     orgId: 1
-    folder: 'MonolithApp'
+    folder: 'Monolith'
     type: file
     disableDeletion: false
     updateIntervalSeconds: 10

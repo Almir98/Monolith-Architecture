@@ -1314,8 +1314,8 @@
     ]
   },
   "timezone": "",
-  "title": "ASP.NET Core",
-  "uid": "KdDACDp4z",
+  "title": "ASP.NET Core Memory",
+  "uid": "dotnet-memory",
   "version": 1,
   "weekStart": ""
 }
