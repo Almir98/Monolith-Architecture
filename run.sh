@@ -22,31 +22,31 @@ case "${1:-help}" in
     "monitoring")
         print_info "Starting monitoring stack..."
         docker-compose -f docker-compose.monitoring.yml up -d
-        print_success "Monitoring started! Grafana: http://localhost:3000, Prometheus: http://localhost:9090"
+        print_success "Monitoring started! Grafana: http://localhost:9000, Prometheus: http://localhost:9090"
         ;;
     "monolith")
         print_info "Starting monolith..."
         docker-compose -f docker-compose.monolith.yml up --build -d
-        print_success "Monolith started! App: http://localhost:6000"
+        print_success "Monolith started! App: http://localhost:8000"
         ;;
     "microservices")
         print_info "Starting microservices..."
         docker-compose -f docker-compose.microservices.yml up --build -d
-        print_success "Microservices started! API Gateway: http://localhost:7000"
+        print_success "Microservices started! API Gateway: http://localhost:8100"
         ;;
     "monolith-full")
         print_info "Starting monitoring + monolith..."
         docker-compose -f docker-compose.monitoring.yml up -d
         sleep 3
         docker-compose -f docker-compose.monolith.yml up --build -d
-        print_success "Full monolith stack running! Grafana: http://localhost:3000, App: http://localhost:6000"
+        print_success "Full monolith stack running! Grafana: http://localhost:9000, App: http://localhost:8000"
         ;;
     "microservices-full")
         print_info "Starting monitoring + microservices..."
         docker-compose -f docker-compose.monitoring.yml up -d
         sleep 3
         docker-compose -f docker-compose.microservices.yml up --build -d
-        print_success "Full microservices stack running! Grafana: http://localhost:3000, API Gateway: http://localhost:7000"
+        print_success "Full microservices stack running! Grafana: http://localhost:9000, API Gateway: http://localhost:8100"
         ;;
     "all")
         print_info "Starting everything (monitoring + monolith + microservices)..."
@@ -55,7 +55,7 @@ case "${1:-help}" in
         docker-compose -f docker-compose.monolith.yml up --build -d
         sleep 3
         docker-compose -f docker-compose.microservices.yml up --build -d
-        print_success "Everything started! Grafana: http://localhost:3000, Monolith: http://localhost:6000, API Gateway: http://localhost:7000"
+        print_success "Everything started! Grafana: http://localhost:9000, Monolith: http://localhost:8000, API Gateway: http://localhost:8100"
         ;;
     "stop-all")
         print_info "Stopping all services..."

@@ -7,17 +7,17 @@ This repository demonstrates and compares **Monolith** vs **Microservices** arch
 ### 1. **Shared Monitoring** (`docker-compose.monitoring.yml`)
 - **Purpose**: Single monitoring stack for both architectures
 - **Use Case**: Run once, monitor everything
-- **Access**: Grafana (http://localhost:3000), Prometheus (http://localhost:9090)
+- **Access**: Grafana (http://localhost:9000), Prometheus (http://localhost:9090)
 
 ### 2. **Monolith** (`docker-compose.monolith.yml`)
 - **Purpose**: Monolith application only
 - **Use Case**: Testing monolith architecture
-- **Access**: App (http://localhost:6000) + shared monitoring
+- **Access**: App (http://localhost:8000) + shared monitoring
 
 ### 3. **Microservices** (`docker-compose.microservices.yml`)
 - **Purpose**: Microservices with API Gateway
 - **Use Case**: Testing microservices architecture
-- **Access**: API Gateway (http://localhost:7000) + individual services + shared monitoring
+- **Access**: API Gateway (http://localhost:8100) + individual services + shared monitoring
 
 ## 🚀 Quick Start
 
@@ -105,7 +105,7 @@ docker-compose -f docker-compose.microservices.yml up --build
 ## 📊 Monitoring & Dashboards
 
 ### Access Points
-- **Grafana**: http://localhost:3000 (admin/admin)
+- **Grafana**: http://localhost:9000 (admin/admin)
 - **Prometheus**: http://localhost:9090
 
 ### Available Dashboards
@@ -160,7 +160,7 @@ k6 run k6-microservices-script.js
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   monolith-app  │    │    prometheus   │    │     grafana     │
-│   (Port 6000)   │───▶│   (Port 9090)   │───▶│   (Port 3000)   │
+│   (Port 8000)   │───▶│   (Port 9090)   │───▶│   (Port 9000)   │
 │   .NET 8 API    │    │   Metrics Store  │    │  Visualization  │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
@@ -169,15 +169,15 @@ k6 run k6-microservices-script.js
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   api-gateway   │    │    prometheus   │    │     grafana     │
-│   (Port 7000)   │───▶│   (Port 9090)   │───▶│   (Port 3000)   │
+│   (Port 8100)   │───▶│   (Port 9090)   │───▶│   (Port 9000)   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │
          ▼
 ┌─────────────────┐
-│  health-service │ (Port 7001)
-│  order-service  │ (Port 7002)
-│ compute-service │ (Port 7003)
-│  bulk-service   │ (Port 7004)
+│  health-service │ (Port 8101)
+│  order-service  │ (Port 8102)
+│ compute-service │ (Port 8103)
+│  bulk-service   │ (Port 8104)
 └─────────────────┘
 ```
 
@@ -234,7 +234,7 @@ cd shared/load-testing
 k6 run k6-script.js
 
 # View metrics in Grafana
-# http://localhost:3000
+# http://localhost:9000
 ```
 
 ### 3. Develop & Test Microservices
@@ -250,7 +250,7 @@ cd shared/load-testing
 k6 run k6-microservices-script.js
 
 # View metrics in Grafana
-# http://localhost:3000
+# http://localhost:9000
 ```
 
 ### 4. Switch Between Architectures
@@ -304,8 +304,8 @@ docker-compose -f docker-compose.microservices.yml down -v
 ### Common Issues
 
 1. **Port Conflicts**
-   - Monolith: 5000, 3000, 9090
-   - Microservices: 5000, 5010, 5020, 5030, 5040, 3000, 9090
+   - Monolith: 8000, 9000, 9090
+   - Microservices: 8100-8104, 9000, 9090
 
 2. **Network Issues**
    - Ensure monitoring network is created first
@@ -325,8 +325,8 @@ docker-compose logs monolith-app
 docker-compose logs api-gateway
 
 # Test endpoints
-curl http://localhost:6000/health
-curl http://localhost:6000/metrics
+curl http://localhost:8000/health
+curl http://localhost:8000/metrics
 ```
 
 ## 📈 Performance Comparison

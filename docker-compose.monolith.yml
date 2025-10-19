@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
     container_name: monolith-app
     ports:
-      - "6000:5000"
+      - "8000:5000"
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:5000

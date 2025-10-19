@@ -9,7 +9,7 @@ services:
       dockerfile: src/ApiGateway/Dockerfile
     container_name: api-gateway
     ports:
-      - "7000:80"
+      - "8100:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -36,7 +36,7 @@ services:
       dockerfile: src/HealthService/Dockerfile
     container_name: health-service
     ports:
-      - "7001:80"
+      - "8101:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -52,7 +52,7 @@ services:
       dockerfile: src/OrderService/Dockerfile
     container_name: order-service
     ports:
-      - "7002:80"
+      - "8102:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -71,7 +71,7 @@ services:
       dockerfile: src/ComputeService/Dockerfile
     container_name: compute-service
     ports:
-      - "7003:80"
+      - "8103:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
@@ -87,7 +87,7 @@ services:
       dockerfile: src/BulkService/Dockerfile
     container_name: bulk-service
     ports:
-      - "7004:80"
+      - "8104:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80

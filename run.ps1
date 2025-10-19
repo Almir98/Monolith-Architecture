@@ -13,8 +13,8 @@ switch ($Command.ToLower()) {
         Start-Sleep -Seconds 5
         docker-compose -f docker-compose.monolith.yml up --build -d
         Write-Host "✅ Monolith stack started!" -ForegroundColor Green
-        Write-Host "Grafana: http://localhost:3000" -ForegroundColor White
-        Write-Host "Monolith: http://localhost:6000/swagger" -ForegroundColor White
+        Write-Host "Grafana: http://localhost:9000" -ForegroundColor White
+        Write-Host "Monolith: http://localhost:8000/swagger" -ForegroundColor White
     }
     "microservices-full" {
         Write-Host "Starting full microservices stack..." -ForegroundColor Yellow
@@ -22,8 +22,8 @@ switch ($Command.ToLower()) {
         Start-Sleep -Seconds 5
         docker-compose -f docker-compose.microservices.yml up --build -d
         Write-Host "✅ Microservices stack started!" -ForegroundColor Green
-        Write-Host "Grafana: http://localhost:3000" -ForegroundColor White
-        Write-Host "API Gateway: http://localhost:7000/swagger" -ForegroundColor White
+        Write-Host "Grafana: http://localhost:9000" -ForegroundColor White
+        Write-Host "API Gateway: http://localhost:8100/swagger" -ForegroundColor White
     }
     "stop-all" {
         Write-Host "Stopping all services..." -ForegroundColor Yellow

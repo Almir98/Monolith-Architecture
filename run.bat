@@ -43,7 +43,7 @@ goto end
 echo Starting monitoring stack...
 docker-compose -f docker-compose.monitoring.yml up -d
 if %errorlevel% equ 0 (
-    echo ✅ Monitoring started! Grafana: http://localhost:3000, Prometheus: http://localhost:9090
+    echo ✅ Monitoring started! Grafana: http://localhost:9000, Prometheus: http://localhost:9090
 ) else (
     echo ❌ Failed to start monitoring stack
     exit /b 1
@@ -54,7 +54,7 @@ goto end
 echo Starting monolith...
 docker-compose -f docker-compose.monolith.yml up --build -d
 if %errorlevel% equ 0 (
-    echo ✅ Monolith started! App: http://localhost:6000
+    echo ✅ Monolith started! App: http://localhost:8000
 ) else (
     echo ❌ Failed to start monolith
     exit /b 1
@@ -65,7 +65,7 @@ goto end
 echo Starting microservices...
 docker-compose -f docker-compose.microservices.yml up --build -d
 if %errorlevel% equ 0 (
-    echo ✅ Microservices started! API Gateway: http://localhost:7000
+    echo ✅ Microservices started! API Gateway: http://localhost:8100
 ) else (
     echo ❌ Failed to start microservices
     exit /b 1
@@ -82,7 +82,7 @@ if %errorlevel% neq 0 (
 timeout /t 3 /nobreak >nul
 docker-compose -f docker-compose.monolith.yml up --build -d
 if %errorlevel% equ 0 (
-    echo ✅ Full monolith stack running! Grafana: http://localhost:3000, App: http://localhost:6000
+    echo ✅ Full monolith stack running! Grafana: http://localhost:9000, App: http://localhost:8000
 ) else (
     echo ❌ Failed to start monolith
     exit /b 1
@@ -99,7 +99,7 @@ if %errorlevel% neq 0 (
 timeout /t 3 /nobreak >nul
 docker-compose -f docker-compose.microservices.yml up --build -d
 if %errorlevel% equ 0 (
-    echo ✅ Full microservices stack running! Grafana: http://localhost:3000, API Gateway: http://localhost:7000
+    echo ✅ Full microservices stack running! Grafana: http://localhost:9000, API Gateway: http://localhost:8100
 ) else (
     echo ❌ Failed to start microservices
     exit /b 1
@@ -122,7 +122,7 @@ if %errorlevel% neq 0 (
 timeout /t 3 /nobreak >nul
 docker-compose -f docker-compose.microservices.yml up --build -d
 if %errorlevel% equ 0 (
-    echo ✅ Everything started! Grafana: http://localhost:3000, Monolith: http://localhost:6000, API Gateway: http://localhost:7000
+    echo ✅ Everything started! Grafana: http://localhost:9000, Monolith: http://localhost:8000, API Gateway: http://localhost:8100
 ) else (
     echo ❌ Failed to start microservices
     exit /b 1

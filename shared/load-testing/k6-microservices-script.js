@@ -16,7 +16,7 @@ export const options = {
   },
 };
 
-const API_GATEWAY_URL = 'http://localhost:7000';
+const API_GATEWAY_URL = 'http://localhost:8100';
 
 export default function () {
   // Test API Gateway health

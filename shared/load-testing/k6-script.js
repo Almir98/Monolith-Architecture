@@ -16,7 +16,7 @@ export const options = {
   },
 };
 
-const BASE_URL = 'http://localhost:6000';
+const BASE_URL = 'http://localhost:8000';
 
 export default function () {
   // Test health endpoint
