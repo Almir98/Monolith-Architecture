@@ -1,0 +1,566 @@
+================================================================================
+ISTRAŽIVANJE: METRIKE ZA USPOREDBU MONOLITH VS MICROSERVICES
+================================================================================
+
+📊 TRENUTNO OBUHVAĆENE METRIKE (Implementirano u dashboardima)
+================================================================================
+
+1. ✅ Latencija (Response Time) - HTTP Request Duration
+   - p50, p95, p99 percentili
+   - PromQL: histogram_quantile(0.50/0.95/0.99, rate(http_request_duration_seconds_bucket[5m]))
+   - Jedinica: sekunde (s)
+   - Pokazuje: Odzivnost sistema
+
+2. ✅ Protok (Requests per Second - RPS) - HTTP Request Rate
+   - Broj obrađenih zahtjeva po sekundi
+   - PromQL: rate(http_requests_total[5m])
+   - Jedinica: reqps
+   - Pokazuje: Kapacitet sistema i broj korisničkih zahtjeva
+
+3. ✅ Potrošnja memorije (Memory Consumption) - Memory Usage
+   - Total Memory: dotnet_total_memory_bytes
+   - Working Set: process_working_set_bytes
+   - Jedinica: bytes (MB/GB)
+   - Pokazuje: RAM potrošnju i efikasnost alokacije resursa
+
+4. ✅ Opterećenje procesora (CPU Usage) - CPU Usage
+   - System CPU Usage: system_runtime_cpu_usage
+   - Process CPU Usage: process_cpu_usage
+   - Jedinica: percent (%)
+   - Pokazuje: Zauzeće procesorskih resursa i skalabilnost
+
+BONUS METRIKE:
+- Total verzije - Aggregatne metrike za sve mikroservise
+- Network I/O - Bytes Sent/Received
+- GC Heap Sizes & Collection Rate - Garbage collection analiza
+- ThreadPool Metrics - Thread management
+- Exception Count - Broj grešaka (stabilnost aplikacije)
+
+
+================================================================================
+📊 DODATNI PRIJEDLOZI DASHBOARDA ZA ISTRAŽIVANJE
+================================================================================
+
+1. 📡 NETWORK OVERHEAD DASHBOARD
+================================================================================
+Zašto: Mikroservisi imaju dodatni network overhead za inter-service komunikaciju
+
+Metrike:
+- Bytes per Request = system_net_sockets_bytes_sent / http_requests_total
+- Network latency između servisa
+- Broj HTTP callova između servisa
+- Total network traffic per endpoint
+
+Očekivana razlika:
+- Monolith: 0 internal network calls, sve u memoriji
+- Microservices: Svaki request može triggerat 5-10 internal HTTP callova
+
+PromQL primjeri:
+```
+# Network overhead per request
+(rate(system_net_sockets_bytes_sent[5m]) + rate(system_net_sockets_bytes_received[5m])) 
+/ rate(http_requests_total[5m])
+
+# Total network traffic
+sum(rate(system_net_sockets_bytes_sent[5m])) by (job)
+```
+
+Implementirano: ✅
+
+
+2. 💰 RESOURCE EFFICIENCY DASHBOARD
+================================================================================
+Zašto: Koja arhitektura efikasnije koristi resurse?
+
+Metrike:
+- CPU per Request = system_runtime_cpu_usage / rate(http_requests_total[5m])
+- Memory per Request = dotnet_total_memory_bytes / rate(http_requests_total[5m])
+- Response Time per CPU % = http_request_duration / system_runtime_cpu_usage
+- Throughput per GB Memory
+
+Očekivano:
+- Monolith: Bolja efikasnost po requestu (manje overheada)
+- Microservices: Veća potrošnja resursa, ali bolja skalabilnost
+
+PromQL primjeri:
+```
+# CPU efficiency (lower is better)
+avg(system_runtime_cpu_usage) / rate(http_requests_total[5m])
+
+# Memory efficiency (lower is better)
+avg(dotnet_total_memory_bytes) / rate(http_requests_total[5m])
+
+# Requests per CPU %
+rate(http_requests_total[5m]) / avg(system_runtime_cpu_usage)
+```
+
+Implementirano: ✅
+
+
+3. 🗄️ DATABASE CONNECTION POOL DASHBOARD
+================================================================================
+Zašto: Pokazuje kako svaka arhitektura upravlja DB konekcijama
+
+Metrike (ako dostupne):
+- efcore_active_db_contexts - Broj aktivnih DbContext-a
+- efcore_queries_executed_total - Broj izvršenih upita
+- efcore_query_duration - Trajanje upita
+- Connection pool utilization
+
+Usporedba:
+- Monolith: 1 connection pool, bolje korištenje, shared across all operations
+- Microservices: N connection pool-ova (po servisu), mogući deadlock-ovi, više overhead-a
+
+Zaključak: Monolith ima prednost u DB connection management
+
+
+4. ❌ ERROR RATE & RESILIENCE DASHBOARD
+================================================================================
+Zašto: Mikroservisi imaju više failure points
+
+Metrike:
+- Error Rate = rate(system_runtime_exception_count_total[5m]) / rate(http_requests_total[5m]) * 100
+- Success Rate = (1 - error_rate) * 100
+- Mean Time Between Failures (MTBF)
+- Errors by service (koji servis najviše greši)
+- Cascading failure detection
+
+PromQL primjeri:
+```
+# Error rate percentage
+(rate(system_runtime_exception_count_total[5m]) / rate(http_requests_total[5m])) * 100
+
+# Success rate
+100 - ((rate(system_runtime_exception_count_total[5m]) / rate(http_requests_total[5m])) * 100)
+
+# Errors by service
+sum(rate(system_runtime_exception_count_total[5m])) by (job)
+```
+
+Očekivano:
+- Monolith: Manje failure points, ali total failure kada padne
+- Microservices: Više failure points, ali partial failure (resilience)
+
+
+5. 📈 SCALABILITY COMPARISON DASHBOARD
+================================================================================
+Zašto: Ključna razlika - kako se ponašaju pod opterećenjem
+
+Metrike:
+- Throughput at 50% CPU = max(http_requests_rate) when cpu_usage = 50%
+- Throughput at 80% CPU = max(http_requests_rate) when cpu_usage = 80%
+- Latency degradation = p99_latency / p50_latency
+- Request rate trend under load
+- Memory growth rate under load
+
+Horizontal Scalability:
+- Monolith: Teže skaliranje (sve ili ništa), ali jednostavnije
+- Microservices: Skaliranje samo bottleneck servisa, fleksibilnije
+
+PromQL primjeri:
+```
+# Throughput at specific CPU levels
+rate(http_requests_total[5m]) and (system_runtime_cpu_usage > 50 and system_runtime_cpu_usage < 60)
+
+# Latency degradation factor
+histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m])) 
+/ 
+histogram_quantile(0.50, rate(http_request_duration_seconds_bucket[5m]))
+
+# Memory growth rate
+deriv(dotnet_total_memory_bytes[5m])
+```
+
+Implementirano: ✅
+
+
+6. 🚀 DEPLOYMENT & RESTART IMPACT DASHBOARD
+================================================================================
+Zašto: Brzina deployment-a i downtime
+
+Metrike:
+- Startup Time: time() - process_start_time_seconds
+- Downtime during deploy: Vrijeme bez requesta
+- Rolling update impact: Koliko requesta failed tokom deploya
+- Time to first successful request
+
+Usporedba:
+- Monolith: Duže startup vrijeme (10-30s), cijela app down, jednostavniji deploy
+- Microservices: Brži restart po servisu (2-5s), zero-downtime moguć, kompleksniji orchestration
+
+Test scenario: Rolling update sa 0% downtime
+
+
+7. 🔗 SERVICE DEPENDENCY & COUPLING DASHBOARD
+================================================================================
+Zašto: Pokazuje kompleksnost arhitekture
+
+Metrike:
+- Service Call Graph: Ko koga poziva
+- Average Hops per Request: Kroz koliko servisa prolazi request
+- Service Availability Impact: Ako jedan servis padne, koliko % requesta failed
+- Inter-service latency
+- Dependency chain depth
+
+Za mikroservise:
+```promql
+# API Gateway calls to services
+sum(rate(http_requests_total{job="api-gateway", endpoint=~"/api/.*"}[5m])) by (endpoint)
+
+# Service-to-service calls
+sum(rate(http_requests_total{job="bulk-service", endpoint=~"http://compute-service.*"}[5m]))
+```
+
+Usporedba:
+- Monolith: 0 network hops, 0 service dependencies, jednostavniji debug
+- Microservices: Multiple hops, complex dependency graph, teži debugging
+
+
+8. 💵 COST EFFICIENCY DASHBOARD
+================================================================================
+Zašto: Praktična odluka - cijena infrastrukture
+
+Metrike:
+- Cost per Request = (CPU_cost + Memory_cost + Network_cost) / requests_total
+- Infrastructure Cost = sum(CPU_cores * price) + sum(Memory_GB * price)
+- Cost per User = total_cost / active_users
+- Resource utilization %
+- Idle resource cost
+
+Pretpostavke za izračun:
+- CPU cost: $0.05 per vCPU hour
+- Memory cost: $0.01 per GB hour
+- Network cost: $0.01 per GB transferred
+
+PromQL primjeri:
+```
+# CPU cost per hour (assume 4 vCPU * $0.05)
+(avg(system_runtime_cpu_usage) / 100) * 4 * 0.05
+
+# Memory cost per hour (assume $0.01 per GB)
+(avg(dotnet_total_memory_bytes) / 1073741824) * 0.01
+
+# Cost per request (total hourly cost / requests per hour)
+((cpu_cost + memory_cost + network_cost) / (rate(http_requests_total[1h]) * 3600))
+```
+
+Očekivano:
+- Monolith: 1 server, jeftiniji za small-medium scale (< 10k RPS)
+- Microservices: N servisa + orchestration (Kubernetes), skuplji ali fleksibilniji, bolje za large scale (> 50k RPS)
+
+Break-even point: Obično oko 20-30k RPS gdje microservices postaju cost-effective
+
+Implementirano: ✅
+
+
+9. 🔍 REQUEST TRACING & BOTTLENECK DASHBOARD
+================================================================================
+Zašto: Gdje se gubi vrijeme u requestu?
+
+Breakdown latencije:
+Total Latency = Gateway Latency + Service Processing + DB Query + Network
+
+Za mikroservise:
+- Gateway → Bulk Service → Compute Service (gdje je bottleneck?)
+- Distributed tracing sa correlation ID
+- Span duration analysis
+
+Metrike:
+- Average latency per service
+- Slowest service in chain
+- Database query time
+- Serialization/deserialization overhead
+
+Tool integration: OpenTelemetry, Jaeger, Zipkin
+
+
+10. 💪 DEVELOPMENT VELOCITY DASHBOARD
+================================================================================
+Zašto: Brzina razvoja i CI/CD
+
+Metrike:
+- Deploy Frequency: Koliko često deploy-aš
+- Build Time: Vrijeme kompajliranja
+- Test Execution Time: Vrijeme testova
+- Lines of Code Changed per Deploy
+- Mean Time To Recovery (MTTR)
+
+Usporedba:
+- Monolith: 
+  * Deploy frequency: Weekly/Monthly
+  * Build time: 5-15 min (cijela app)
+  * Test time: 30-60 min (cijeli test suite)
+  * LOC per deploy: 500-2000 (veliki changeset = veći risk)
+  
+- Microservices:
+  * Deploy frequency: Daily/Multiple per day
+  * Build time: 1-3 min (samo jedan servis)
+  * Test time: 5-15 min (samo relevantan test suite)
+  * LOC per deploy: 50-200 (manji changeset = manji risk)
+
+Zaključak: Microservices omogućavaju brži development cycle
+
+
+================================================================================
+🎯 PREPORUKE ZA ISTRAŽIVANJE
+================================================================================
+
+OBAVEZNO DODAJ (Implementirano):
+1. ✅ Network Overhead Dashboard - Ključna razlika između arhitektura
+2. ✅ Resource Efficiency Dashboard - Cost/benefit analiza
+3. ✅ Scalability Comparison - Performanse pod opterećenjem
+4. ✅ Cost Efficiency Dashboard - Ekonomska analiza
+
+AKO IMAŠ VREMENA:
+5. ⭐ Database Connection Pool - Pokazuje DB bottleneck
+6. ⭐ Error Rate & Resilience - Stabilnost sistema
+7. ⭐ Service Dependency Graph - Kompleksnost visualizacija
+
+
+================================================================================
+🧪 DODATNI TEST SCENARIJI ZA LOAD TESTING
+================================================================================
+
+SCENARIO 1: Spike Test
+--------------------------------------------------------------------------------
+Opis: Nagao porast requesta (0 → 1000 RPS u 10s)
+Cilj: Testirati autoscaling i elasticity
+Trajanje: 5 minuta
+
+Očekivani rezultati:
+- Monolith: Sporiji response na spike, može crashati
+- Microservices: Brže skaliranje bottleneck servisa, bolja resilience
+
+Metrike za praćenje:
+- Response time degradation
+- Error rate spike
+- Memory/CPU usage spike
+- Time to stabilize
+
+
+SCENARIO 2: Stress Test
+--------------------------------------------------------------------------------
+Opis: Povećavanje opterećenja dok sistem ne pukne
+Cilj: Pronaći breaking point
+Trajanje: Do failure
+
+Test plan:
+- Start: 100 RPS
+- Increment: +100 RPS svake 2 minute
+- Stop: Kada error rate > 5% ili latency > 5s
+
+Očekivani rezultati:
+- Monolith: Crash oko 2000-3000 RPS (sve pada odjednom)
+- Microservices: Graceful degradation, bottleneck servis pada prvi
+
+Metrike:
+- Maximum sustainable RPS
+- Breaking point
+- Recovery time
+
+
+SCENARIO 3: Partial Failure Test (Chaos Engineering)
+--------------------------------------------------------------------------------
+Opis: Ugasi jedan mikroservis (npr. health-service)
+Cilj: Testirati fault tolerance i resilience
+Trajanje: 10 minuta
+
+Test plan:
+1. Load: 500 RPS steady state
+2. T+2min: Kill health-service
+3. T+7min: Restart health-service
+4. T+10min: End test
+
+Očekivani rezultati:
+- Monolith: N/A (ne može se testirati ovako)
+- Microservices: 
+  * Zahtjevi ka health-service: 100% error
+  * Ostali servisi: Normalno rade (circuit breaker)
+  * Ukupan error rate: 10-20% (samo health endpoints)
+
+Metrike:
+- Blast radius (koliko sistema je pogođeno)
+- Recovery time nakon restarta
+- Circuit breaker activation
+
+
+SCENARIO 4: Database Bottleneck Simulation
+--------------------------------------------------------------------------------
+Opis: Usporite DB dodavanjem latency (100ms extra)
+Cilj: Testirati kako svaka arhitektura handla DB slowness
+Trajanje: 10 minuta
+
+Test plan:
+- Baseline: 500 RPS, DB latency 10ms
+- Test: 500 RPS, DB latency 110ms (+100ms artificially)
+
+Očekivani rezultati:
+- Monolith: 
+  * Cijela aplikacija usporava
+  * Thread pool exhaustion moguć
+  * Cascading failures
+
+- Microservices:
+  * Samo servisi koji koriste DB usporavaju
+  * Ostali servisi normalno rade
+  * Bolji connection pool management per-service
+
+Metrike:
+- Request queue length
+- Thread pool utilization
+- Connection pool exhaustion
+
+
+SCENARIO 5: Memory Leak Simulation
+--------------------------------------------------------------------------------
+Opis: Simuliraj memory leak u jednom servisu (10MB/min)
+Cilj: Testirati failure isolation
+Trajanje: 20 minuta
+
+Test plan:
+1. Start: Normalan load (500 RPS)
+2. Inject: Memory leak u compute-service
+3. Observe: Kako sistem reaguje
+
+Očekivani rezultati:
+- Monolith: 
+  * Cijela aplikacija pada kada memory pool nestane
+  * Restart potreban
+  * Downtime: 30-60s
+
+- Microservices:
+  * Samo compute-service pada
+  * Ostali servisi rade normalno
+  * Kubernetes automatski restarta compute-service
+  * Partial downtime: samo compute endpoints
+
+Metrike:
+- Memory growth rate
+- Time to OOM (Out of Memory)
+- Blast radius
+- Recovery time
+
+
+SCENARIO 6: Sustained Load Test (Soak Test)
+--------------------------------------------------------------------------------
+Opis: Konstantan load 24h
+Cilj: Pronaći memory leaks i resource degradation
+Trajanje: 24 sata
+
+Test plan:
+- Load: 300 RPS (70% capacity)
+- Duration: 24h continuous
+
+Očekivani problemi:
+- Memory leaks
+- Connection pool leaks
+- File descriptor exhaustion
+- Log file growth
+
+Metrike:
+- Memory trend over time
+- Latency trend over time
+- GC frequency increase
+- Resource utilization growth
+
+
+================================================================================
+📋 ZAKLJUČAK I PREPORUKE
+================================================================================
+
+KADA KORISTITI MONOLITH:
+✅ Mala do srednja aplikacija (< 10k RPS)
+✅ Mali team (< 10 developera)
+✅ Jednostavni deployment zahtjevi
+✅ Budget ograničen (manja infrastruktura)
+✅ Brz time-to-market (jednostavniji development)
+✅ Tesno povezana business logika
+✅ Nema potrebe za independent scaling
+
+PREDNOSTI:
++ Jednostavniji development
++ Brži početni development
++ Lakši debugging (sve u jednom procesu)
++ Bolja performansa per-request (bez network overhead)
++ Niža infrastrukturna cijena za small scale
++ Jednostavniji deployment
++ Bolji DB connection management
+
+MANE:
+- Loša skalabilnost (sve ili ništa)
+- Duže startup vrijeme
+- Rizik od total failure
+- Teže održavanje sa rastom koda
+- Deploy cijele aplikacije za svaku promjenu
+- Technology lock-in (teško promijeniti tehnologiju)
+
+
+KADA KORISTITI MICROSERVICES:
+✅ Velika aplikacija (> 50k RPS)
+✅ Veliki team (> 20 developera)
+✅ Potreba za independent scaling
+✅ Različite tehnologije po servisu
+✅ High availability kritična (99.99%+)
+✅ Često deployment (multiple per day)
+✅ Business logika jasno odvojena po domenima
+
+PREDNOSTI:
++ Horizontalno skaliranje (samo bottleneck servisi)
++ Brz deployment pojedinačnih servisa
++ Technology flexibility per-service
++ Fault isolation (jedan servis pada, ostali rade)
++ Bolja organizacija velikog team-a
++ Brži CI/CD (manji build/test time)
++ Independent versioning
+
+MANE:
+- Kompleksniji development
+- Network overhead (latency + bandwidth)
+- Veći resource overhead (više memorije/CPU)
+- Teži debugging (distributed tracing needed)
+- Viša infrastrukturna cijena (orchestration, monitoring)
+- Eventual consistency challenges
+- Database transaction complexity
+
+
+BREAK-EVEN POINT:
+- RPS: ~20-30k requesta po sekundi
+- Team size: ~15-20 developera
+- Codebase: ~100k+ linija koda
+
+HYBRID APPROACH (Modularni Monolit):
+- Start sa dobro organiziranim monolitom (moduli/bounded contexts)
+- Lako se može razbiti na microservices kasnije
+- Najbolje od oba svijeta za srednje aplikacije
+
+================================================================================
+📚 REFERENCE I RESURSI
+================================================================================
+
+Books:
+- "Building Microservices" - Sam Newman
+- "Monolith to Microservices" - Sam Newman
+- "The Art of Scalability" - Abbott & Fisher
+
+Papers:
+- "Microservices: Yesterday, Today, and Tomorrow" - Dragoni et al.
+- "On the Definition of Microservice Bad Smells" - Taibi & Lenarduzzi
+
+Tools za monitoring:
+- Prometheus + Grafana (metrics)
+- OpenTelemetry (distributed tracing)
+- Jaeger / Zipkin (trace visualization)
+- K6 / JMeter (load testing)
+
+Best Practices:
+- Start simple (monolith), evolve to microservices when needed
+- Monitor everything from day 1
+- Implement distributed tracing early
+- Use circuit breakers for resilience
+- Implement proper logging and correlation IDs
+- Automate deployment and testing
+
+================================================================================
+EOF
+================================================================================
+

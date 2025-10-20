@@ -57,12 +57,9 @@
     "ms-kubernetes-tools.vscode-kubernetes-tools"
   ],
   "csharp.semanticHighlighting.enabled": true,
-  "csharp.inlayHints.parameters.enabled": true,
-  "csharp.inlayHints.types.enabled": true,
   "csharp.format.enable": true,
   "omnisharp.enableEditorConfigSupport": true,
   "omnisharp.enableRoslynAnalyzers": true,
-  "omnisharp.organizeImportsOnFormat": true,
   "json.schemas": [
     {
       "fileMatch": ["docker-compose*.yml"],
@@ -85,5 +82,8 @@
   "docker.containers.label": "ContainerName",
   "docker.images.label": "Tag",
   "docker.volumes.label": "Name",
-  "docker.networks.label": "Name"
+  "docker.networks.label": "Name",
+  "dotnet.inlayHints.enableInlayHintsForParameters": true,
+  "csharp.inlayHints.enableInlayHintsForTypes": true,
+  "dotnet.formatting.organizeImportsOnFormat": true
 }
