@@ -140,7 +140,7 @@ docker-compose -f docker-compose.monolith.yml up --build
 
 # Run monolith load test
 cd shared/load-testing
-k6 run k6-script.js
+k6 run k6-monolith-script.js
 ```
 
 ### Test Microservices
@@ -207,9 +207,10 @@ k6 run k6-microservices-script.js
 │   │   ├── grafana/          # Dashboards & configs
 │   │   └── prometheus.yml     # Prometheus configuration
 │   └── load-testing/          # Shared load testing (k6 scripts)
-│       ├── k6-script.js      # Monolith load test
+│       ├── k6-monolith-script.js      # Monolith load test
 │       ├── k6-microservices-script.js # Microservices load test
-│       └── README.md          # Load testing documentation
+│       ├── k6-comparison.js           # Comparison test
+│       └── README.md                  # Load testing documentation
 ├── docker-compose.monitoring.yml    # Monitoring only
 ├── docker-compose.monolith.yml      # Monolith + monitoring
 ├── docker-compose.microservices.yml # Microservices + monitoring
@@ -231,7 +232,7 @@ docker-compose -f docker-compose.monolith.yml up --build
 
 # Run load tests
 cd shared/load-testing
-k6 run k6-script.js
+k6 run k6-monolith-script.js
 
 # View metrics in Grafana
 # http://localhost:9000
