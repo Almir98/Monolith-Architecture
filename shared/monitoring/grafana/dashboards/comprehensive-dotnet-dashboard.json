@@ -1932,13 +1932,21 @@
                   "fixedColor": "purple",
                   "mode": "fixed"
                 }
+              },
+              {
+                "id": "decimals",
+                "value": 4
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 3
               }
             ]
           },
           {
             "matcher": {
               "id": "byName",
-              "options": "Cost per Request"
+              "options": "Cost per 10K Requests"
             },
             "properties": [
               {
@@ -1949,12 +1957,41 @@
                 }
               },
               {
-                "id": "unit",
-                "value": "short"
+                "id": "decimals",
+                "value": 4
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [10, 5],
+                  "fill": "dash"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Cost per Million Requests"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
               },
               {
                 "id": "decimals",
-                "value": 6
+                "value": 2
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [5, 10],
+                  "fill": "dash"
+                }
               }
             ]
           }
@@ -1999,10 +2036,21 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "(((avg(system_runtime_cpu_usage{job=\"monolith-app\"}) / 100) * 4 * 0.05) + ((avg(dotnet_total_memory_bytes{job=\"monolith-app\"}) / 1073741824) * 0.01)) / (sum(rate(http_requests_total{job=\"monolith-app\"}[1h])) * 3600)",
-          "legendFormat": "Cost per Request",
+          "expr": "(((avg(system_runtime_cpu_usage{job=\"monolith-app\"}) / 100) * 4 * 0.05) + ((avg(dotnet_total_memory_bytes{job=\"monolith-app\"}) / 1073741824) * 0.01)) / (sum(rate(http_requests_total{job=\"monolith-app\"}[1h])) * 3600) * 10000",
+          "legendFormat": "Cost per 10K Requests",
           "range": true,
           "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "(((avg(system_runtime_cpu_usage{job=\"monolith-app\"}) / 100) * 4 * 0.05) + ((avg(dotnet_total_memory_bytes{job=\"monolith-app\"}) / 1073741824) * 0.01)) / (sum(rate(http_requests_total{job=\"monolith-app\"}[1h])) * 3600) * 1000000",
+          "legendFormat": "Cost per Million Requests",
+          "range": true,
+          "refId": "C"
         }
       ],
       "title": "Cost Efficiency (Estimated)",

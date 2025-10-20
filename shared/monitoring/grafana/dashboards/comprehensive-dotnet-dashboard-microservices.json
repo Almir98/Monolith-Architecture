@@ -81,7 +81,83 @@
           },
           "unit": "bytes"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -115,7 +191,7 @@
           "expr": "dotnet_total_memory_bytes{job=~\"$applicationName\"}",
           "format": "time_series",
           "instant": false,
-          "legendFormat": "",
+          "legendFormat": "{{job}}",
           "range": true,
           "refId": "A"
         }
@@ -183,7 +259,83 @@
           },
           "unit": "percent"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -214,7 +366,7 @@
           },
           "editorMode": "builder",
           "expr": "system_runtime_cpu_usage{job=~\"$applicationName\"}",
-          "legendFormat": "CPU Usage",
+          "legendFormat": "{{job}}",
           "range": true,
           "refId": "A"
         }
@@ -282,7 +434,83 @@
           },
           "unit": "reqps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -313,7 +541,7 @@
           },
           "editorMode": "builder",
           "expr": "rate(http_requests_total{job=~\"$applicationName\"}[5m])",
-          "legendFormat": "{{method}} {{endpoint}}",
+          "legendFormat": "{{job}} - {{method}} {{endpoint}}",
           "range": true,
           "refId": "A"
         }
@@ -381,7 +609,132 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p50"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [0, 0],
+                  "fill": "solid"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p95"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [10, 10],
+                  "fill": "dash"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p99"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [10, 5],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -412,7 +765,7 @@
           },
           "editorMode": "builder",
           "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{job=~\"$applicationName\"}[5m]))",
-          "legendFormat": "p50",
+          "legendFormat": "{{job}} - p50",
           "range": true,
           "refId": "A"
         },
@@ -423,7 +776,7 @@
           },
           "editorMode": "builder",
           "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=~\"$applicationName\"}[5m]))",
-          "legendFormat": "p95",
+          "legendFormat": "{{job}} - p95",
           "range": true,
           "refId": "B"
         },
@@ -434,7 +787,7 @@
           },
           "editorMode": "builder",
           "expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{job=~\"$applicationName\"}[5m]))",
-          "legendFormat": "p99",
+          "legendFormat": "{{job}} - p99",
           "range": true,
           "refId": "C"
         }
@@ -502,7 +855,83 @@
           },
           "unit": "bytes"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -533,7 +962,7 @@
           },
           "editorMode": "builder",
           "expr": "system_net_sockets_bytes_sent{job=~\"$applicationName\"}",
-          "legendFormat": "Bytes Sent",
+          "legendFormat": "{{job}} - Bytes Sent",
           "range": true,
           "refId": "A"
         },
@@ -544,7 +973,7 @@
           },
           "editorMode": "builder",
           "expr": "system_net_sockets_bytes_received{job=~\"$applicationName\"}",
-          "legendFormat": "Bytes Received",
+          "legendFormat": "{{job}} - Bytes Received",
           "range": true,
           "refId": "B"
         }
@@ -615,14 +1044,14 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "Total Memory"
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "yellow",
+                  "fixedColor": "blue",
                   "mode": "fixed"
                 }
               }
@@ -630,14 +1059,59 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Working Set"
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
                   "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
                   "mode": "fixed"
                 }
               }
@@ -674,7 +1148,7 @@
           },
           "editorMode": "code",
           "expr": "dotnet_total_memory_bytes{job=~\"$applicationName\"}",
-          "legendFormat": "Total Memory",
+          "legendFormat": "{{job}} - Total Memory",
           "range": true,
           "refId": "A"
         },
@@ -685,7 +1159,7 @@
           },
           "editorMode": "code",
           "expr": "process_working_set_bytes{job=~\"$applicationName\"}",
-          "legendFormat": "Working Set",
+          "legendFormat": "{{job}} - Working Set",
           "range": true,
           "refId": "B"
         }
@@ -756,8 +1230,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "System CPU Usage"
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
             },
             "properties": [
               {
@@ -771,14 +1245,59 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Process CPU Usage"
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
                   "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
                   "mode": "fixed"
                 }
               }
@@ -815,7 +1334,7 @@
           },
           "editorMode": "code",
           "expr": "system_runtime_cpu_usage{job=~\"$applicationName\"}",
-          "legendFormat": "System CPU Usage",
+          "legendFormat": "{{job}} - System CPU",
           "range": true,
           "refId": "A"
         },
@@ -826,7 +1345,7 @@
           },
           "editorMode": "code",
           "expr": "process_cpu_usage{job=~\"$applicationName\"}",
-          "legendFormat": "Process CPU Usage",
+          "legendFormat": "{{job}} - Process CPU",
           "range": true,
           "refId": "B"
         }
@@ -894,7 +1413,83 @@
           },
           "unit": "reqps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -924,8 +1519,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_requests_total{job=~\"$applicationName\"}[5m]))",
-          "legendFormat": "Total Request Rate",
+          "expr": "sum(rate(http_requests_total{job=~\"$applicationName\"}[5m])) by (job)",
+          "legendFormat": "{{job}}",
           "range": true,
           "refId": "A"
         }
@@ -996,8 +1591,23 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "p50"
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
             },
             "properties": [
               {
@@ -1011,14 +1621,14 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "p95"
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "yellow",
+                  "fixedColor": "orange",
                   "mode": "fixed"
                 }
               }
@@ -1026,8 +1636,23 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "p99"
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
             },
             "properties": [
               {
@@ -1070,7 +1695,7 @@
           },
           "editorMode": "code",
           "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{job=~\"$applicationName\"}[5m]))",
-          "legendFormat": "p50",
+          "legendFormat": "{{job}} - p50",
           "range": true,
           "refId": "A"
         },
@@ -1081,7 +1706,7 @@
           },
           "editorMode": "code",
           "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{job=~\"$applicationName\"}[5m]))",
-          "legendFormat": "p95",
+          "legendFormat": "{{job}} - p95",
           "range": true,
           "refId": "B"
         },
@@ -1092,7 +1717,7 @@
           },
           "editorMode": "code",
           "expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{job=~\"$applicationName\"}[5m]))",
-          "legendFormat": "p99",
+          "legendFormat": "{{job}} - p99",
           "range": true,
           "refId": "C"
         }
@@ -1163,23 +1788,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "Bytes Sent"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Bytes Received"
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
             },
             "properties": [
               {
@@ -1193,8 +1803,38 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Total Network I/O"
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
             },
             "properties": [
               {
@@ -1203,10 +1843,21 @@
                   "fixedColor": "purple",
                   "mode": "fixed"
                 }
-              },
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
               {
-                "id": "custom.lineWidth",
-                "value": 4
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
               }
             ]
           }
@@ -1241,7 +1892,7 @@
           },
           "editorMode": "code",
           "expr": "system_net_sockets_bytes_sent{job=~\"$applicationName\"}",
-          "legendFormat": "Bytes Sent",
+          "legendFormat": "{{job}} - Bytes Sent",
           "range": true,
           "refId": "A"
         },
@@ -1252,7 +1903,7 @@
           },
           "editorMode": "code",
           "expr": "system_net_sockets_bytes_received{job=~\"$applicationName\"}",
-          "legendFormat": "Bytes Received",
+          "legendFormat": "{{job}} - Bytes Received",
           "range": true,
           "refId": "B"
         },
@@ -1263,7 +1914,7 @@
           },
           "editorMode": "code",
           "expr": "system_net_sockets_bytes_sent{job=~\"$applicationName\"} + system_net_sockets_bytes_received{job=~\"$applicationName\"}",
-          "legendFormat": "Total Network I/O",
+          "legendFormat": "{{job}} - Total I/O",
           "range": true,
           "refId": "C"
         }
@@ -1331,7 +1982,83 @@
           },
           "unit": "binBps"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1361,8 +2088,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "(sum(rate(system_net_sockets_bytes_sent{job=~\"$applicationName\"}[5m])) + sum(rate(system_net_sockets_bytes_received{job=~\"$applicationName\"}[5m]))) / sum(rate(http_requests_total{job=~\"$applicationName\"}[5m]))",
-          "legendFormat": "Network Bytes per Request",
+          "expr": "(sum(rate(system_net_sockets_bytes_sent{job=~\"$applicationName\"}[5m])) by (job) + sum(rate(system_net_sockets_bytes_received{job=~\"$applicationName\"}[5m])) by (job)) / sum(rate(http_requests_total{job=~\"$applicationName\"}[5m])) by (job)",
+          "legendFormat": "{{job}}",
           "range": true,
           "refId": "A"
         }
@@ -1433,8 +2160,8 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "CPU per Request (%)"
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
             },
             "properties": [
               {
@@ -1448,8 +2175,8 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Memory per Request (MB)"
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
             },
             "properties": [
               {
@@ -1458,23 +2185,49 @@
                   "fixedColor": "green",
                   "mode": "fixed"
                 }
-              },
-              {
-                "id": "unit",
-                "value": "decmbytes"
               }
             ]
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Requests per CPU %"
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
                   "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
                   "mode": "fixed"
                 }
               }
@@ -1510,8 +2263,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(system_runtime_cpu_usage{job=~\"$applicationName\"}) / sum(rate(http_requests_total{job=~\"$applicationName\"}[5m]))",
-          "legendFormat": "CPU per Request (%)",
+          "expr": "avg(system_runtime_cpu_usage{job=~\"$applicationName\"}) by (job) / sum(rate(http_requests_total{job=~\"$applicationName\"}[5m])) by (job)",
+          "legendFormat": "{{job}} - CPU per Request",
           "range": true,
           "refId": "A"
         },
@@ -1521,8 +2274,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg(dotnet_total_memory_bytes{job=~\"$applicationName\"}) / sum(rate(http_requests_total{job=~\"$applicationName\"}[5m])) / 1048576",
-          "legendFormat": "Memory per Request (MB)",
+          "expr": "avg(dotnet_total_memory_bytes{job=~\"$applicationName\"}) by (job) / sum(rate(http_requests_total{job=~\"$applicationName\"}[5m])) by (job) / 1048576",
+          "legendFormat": "{{job}} - Memory per Request",
           "range": true,
           "refId": "B"
         },
@@ -1532,8 +2285,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(rate(http_requests_total{job=~\"$applicationName\"}[5m])) / avg(system_runtime_cpu_usage{job=~\"$applicationName\"})",
-          "legendFormat": "Requests per CPU %",
+          "expr": "sum(rate(http_requests_total{job=~\"$applicationName\"}[5m])) by (job) / avg(system_runtime_cpu_usage{job=~\"$applicationName\"}) by (job)",
+          "legendFormat": "{{job}} - Requests per CPU",
           "range": true,
           "refId": "C"
         }
@@ -1604,8 +2357,68 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "Latency Degradation Factor"
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
             },
             "properties": [
               {
@@ -1614,25 +2427,6 @@
                   "fixedColor": "red",
                   "mode": "fixed"
                 }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Memory Growth Rate (MB/s)"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              },
-              {
-                "id": "unit",
-                "value": "decmbytes"
               }
             ]
           }
@@ -1667,7 +2461,7 @@
           },
           "editorMode": "code",
           "expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{job=~\"$applicationName\"}[5m])) / histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{job=~\"$applicationName\"}[5m]))",
-          "legendFormat": "Latency Degradation Factor",
+          "legendFormat": "{{job}} - Latency Degradation",
           "range": true,
           "refId": "A"
         },
@@ -1678,7 +2472,7 @@
           },
           "editorMode": "code",
           "expr": "deriv(dotnet_total_memory_bytes{job=~\"$applicationName\"}[5m]) / 1048576",
-          "legendFormat": "Memory Growth Rate (MB/s)",
+          "legendFormat": "{{job}} - Memory Growth",
           "range": true,
           "refId": "B"
         }
@@ -1749,8 +2543,53 @@
         "overrides": [
           {
             "matcher": {
-              "id": "byName",
-              "options": "Total Hourly Cost"
+              "id": "byRegexp",
+              "options": "/.*api-gateway.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*bulk-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*compute-service.*/"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*health-service.*/"
             },
             "properties": [
               {
@@ -1764,24 +2603,70 @@
           },
           {
             "matcher": {
-              "id": "byName",
-              "options": "Cost per Request"
+              "id": "byRegexp",
+              "options": "/.*order-service.*/"
             },
             "properties": [
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "orange",
+                  "fixedColor": "red",
                   "mode": "fixed"
                 }
-              },
-              {
-                "id": "unit",
-                "value": "short"
-              },
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*Hourly Cost/"
+            },
+            "properties": [
               {
                 "id": "decimals",
-                "value": 6
+                "value": 4
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 3
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*10K Requests/"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 4
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [10, 5],
+                  "fill": "dash"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/.*Million Requests/"
+            },
+            "properties": [
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [5, 10],
+                  "fill": "dash"
+                }
               }
             ]
           }
@@ -1815,8 +2700,8 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "((avg(system_runtime_cpu_usage{job=~\"$applicationName\"}) / 100) * 4 * 0.05) + ((avg(dotnet_total_memory_bytes{job=~\"$applicationName\"}) / 1073741824) * 0.01) + ((sum(rate(system_net_sockets_bytes_sent{job=~\"$applicationName\"}[1h])) + sum(rate(system_net_sockets_bytes_received{job=~\"$applicationName\"}[1h]))) * 3600 / 1073741824 * 0.01)",
-          "legendFormat": "Total Hourly Cost",
+          "expr": "((avg(system_runtime_cpu_usage{job=~\"$applicationName\"}) by (job) / 100) * 4 * 0.05) + ((avg(dotnet_total_memory_bytes{job=~\"$applicationName\"}) by (job) / 1073741824) * 0.01) + ((sum(rate(system_net_sockets_bytes_sent{job=~\"$applicationName\"}[1h])) by (job) + sum(rate(system_net_sockets_bytes_received{job=~\"$applicationName\"}[1h])) by (job)) * 3600 / 1073741824 * 0.01)",
+          "legendFormat": "{{job}} - Hourly Cost",
           "range": true,
           "refId": "A"
         },
@@ -1826,10 +2711,21 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "(((avg(system_runtime_cpu_usage{job=~\"$applicationName\"}) / 100) * 4 * 0.05) + ((avg(dotnet_total_memory_bytes{job=~\"$applicationName\"}) / 1073741824) * 0.01)) / (sum(rate(http_requests_total{job=~\"$applicationName\"}[1h])) * 3600)",
-          "legendFormat": "Cost per Request",
+          "expr": "(((avg(system_runtime_cpu_usage{job=~\"$applicationName\"}) by (job) / 100) * 4 * 0.05) + ((avg(dotnet_total_memory_bytes{job=~\"$applicationName\"}) by (job) / 1073741824) * 0.01)) / (sum(rate(http_requests_total{job=~\"$applicationName\"}[1h])) by (job) * 3600) * 10000",
+          "legendFormat": "{{job}} - Cost per 10K Requests",
           "range": true,
           "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "(((avg(system_runtime_cpu_usage{job=~\"$applicationName\"}) by (job) / 100) * 4 * 0.05) + ((avg(dotnet_total_memory_bytes{job=~\"$applicationName\"}) by (job) / 1073741824) * 0.01)) / (sum(rate(http_requests_total{job=~\"$applicationName\"}[1h])) by (job) * 3600) * 1000000",
+          "legendFormat": "{{job}} - Cost per Million Requests",
+          "range": true,
+          "refId": "C"
         }
       ],
       "title": "Cost Efficiency (Estimated)",
