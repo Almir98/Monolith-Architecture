@@ -59,6 +59,18 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline
 // Enable Swagger in all environments for easy API testing
+
+// Add redirect from root to Swagger
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/swagger", permanent: false);
+        return;
+    }
+    await next();
+});
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {

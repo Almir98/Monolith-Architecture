@@ -52,6 +52,17 @@ try
     // Configure middleware pipeline
     if (app.Environment.IsDevelopment())
     {
+        // Add redirect from root to Swagger
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Path == "/")
+            {
+                context.Response.Redirect("/swagger", permanent: false);
+                return;
+            }
+            await next();
+        });
+        
         app.UseSwagger();
         app.UseSwaggerUI(options =>
         {
@@ -81,8 +92,8 @@ try
     // Map reverse proxy
     app.MapReverseProxy();
 
-    // Add root endpoint
-    app.MapGet("/", () => new
+    // Add info endpoint (instead of root)
+    app.MapGet("/info", () => new
     {
         service = "API Gateway",
         version = "1.0",
